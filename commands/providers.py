@@ -1,6 +1,6 @@
 import click
 from core.providers import SUPPORTED_PROVIDERS
-from core.registry import provider_exists
+from core.models import provider_exists
 from core.config import load_config, save_config
 
 @click.group()

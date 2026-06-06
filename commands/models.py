@@ -1,5 +1,5 @@
 import click
-from core.registry import get_models
+from core.models import get_models
 from core.config import load_config
 
 @click.command()
