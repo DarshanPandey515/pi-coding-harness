@@ -32,14 +32,20 @@ def agent(prompt):
     tree = get_project_tree()
     
     full_prompt = f"""
-        Project structure:
+        User current folder Structure:
         {tree}
 
-        User request:
+        User Request:
         {prompt}
 
-        Complete this task now.
-    """    
+        Instructions:
+        - Explore the repository if needed.
+        - Use bash with grep/find/tree when searching.
+        - Read files only when necessary.
+        - Use edit for existing files.
+        - Use write for new files.
+        - Complete the task and then return a final response.
+    """
     
     response  = run_agent(
         api_key,
