@@ -3,6 +3,7 @@ from core.gemini import generate
 from core.tools.read import read_file
 from core.tools.bash import run_command
 from core.tools.write import write_file
+from core.tools.edit import edit_file
 from core.tools_registry import AVAILABLE_TOOLS
 import json_repair
 from core.system import SYSTEM_PROMPT
@@ -68,6 +69,15 @@ def execute_tool(response):
             response["path"],
             response["content"]
         )
+        
+        
+    elif tool_name == "edit":
+        
+        path = response.get("path", "unknown")
+        old_text = response.get("old_text", "unknown")
+        new_text = response.get("new_text", "unknown")
+        
+        return edit_file(path,old_text,new_text)
     
     else:
         return tool_function(response)
@@ -76,7 +86,9 @@ def execute_tool(response):
 agent_state = {
     "files_read": [],
     "files_written": [],
-    "commands_run": []
+    "commands_run": [],
+    "file_edited": []
+
 }
 
 def run_agent(api_key, model, prompt):
@@ -141,6 +153,10 @@ def run_agent(api_key, model, prompt):
             tool_key = f"bash:{response.get('command')}"
             agent_state["commands_run"].append(response["command"])
 
+        elif tool_name == "edit":
+            tool_key = f"edit: {response.get('path')}"
+            agent_state["file_edited"].append(response["path"])        
+        
         else:
             tool_key = tool_name
             
@@ -162,6 +178,12 @@ def run_agent(api_key, model, prompt):
         elif tool_name == "write":
             path = response.get("path", "unknown")
             print(f"→ WRITING: {path}")
+            
+        elif tool_name == "edit":
+            path = response.get("path", "unknown")            
+            print(f"→ EDITING: {path}")
+            
+            
         
         else:
             print(f"→ EXECUTING TOOL: {tool_name}")
