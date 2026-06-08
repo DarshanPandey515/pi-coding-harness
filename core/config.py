@@ -1,9 +1,14 @@
 from pathlib import Path
 import json
 
-CONFIG_DIR = Path.home() / ".opencode"
+CONFIG_DIR = Path.home() / ".pi-agent"
+SESSIONS_DIR = CONFIG_DIR / "sessions"
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
+SESSIONS_DIR.mkdir(
+    parents=True,
+    exist_ok=True
+)
 
 def load_config():
     if not CONFIG_FILE.exists():

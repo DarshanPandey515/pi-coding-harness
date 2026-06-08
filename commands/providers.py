@@ -5,7 +5,7 @@ from core.config import load_config, save_config
 
 @click.group()
 def providers():
-    """Manage providers"""
+    """Manage providers, login & logout"""
     pass
 
 

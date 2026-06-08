@@ -1,6 +1,5 @@
 import click
 from core.config import get_default_model,get_provider_api_key
-from core.gemini import generate
 from core.repo import get_project_tree
 from core.agent_loop import run_agent
 
@@ -11,6 +10,7 @@ from core.agent_loop import run_agent
     required=True
 )
 def agent(prompt):
+    """use 'python main.py agent --prompt /your task/'"""
     
     model = get_default_model()
     

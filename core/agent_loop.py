@@ -105,10 +105,7 @@ def run_agent(api_key, model, prompt):
     
     written_files = set()                
     
-    for step in range(100):
-        
-        print(f"\nSTEP {step + 1}")
-        
+    for step in range(100):        
         
         state_prompt = f"""
             Agent State
@@ -121,10 +118,12 @@ def run_agent(api_key, model, prompt):
 
             Commands Run:
             {agent_state['commands_run']}
+            
+            REMINDER: You MUST respond with ONLY valid JSON.
         """
         
         raw_response = generate(api_key,model,messages + [state_prompt])
-        
+                
         response = parse_response(raw_response)
         
         messages.append(
@@ -163,6 +162,7 @@ def run_agent(api_key, model, prompt):
 
         tool_counts[tool_key] = tool_counts.get(tool_key, 0) + 1
 
+        print("")
 
         if tool_counts[tool_key] > 10:
             return f"tool loop detected: {tool_key}"
@@ -181,9 +181,7 @@ def run_agent(api_key, model, prompt):
             
         elif tool_name == "edit":
             path = response.get("path", "unknown")            
-            print(f"→ EDITING: {path}")
-            
-            
+            print(f"→ EDITING: {path}") 
         
         else:
             print(f"→ EXECUTING TOOL: {tool_name}")

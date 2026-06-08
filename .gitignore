@@ -30,8 +30,8 @@ env/
 
 # Project specific - API Keys and Sensitive Data
 # Your OpenCode config with API keys
-.opencode/
-~/.opencode/
+.pi/
+~/.pi/
 .opencode/config.json
 config.json
 *config.json
