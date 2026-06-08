@@ -1,0 +1,6 @@
+click
+google-genai
+python-dotenv
+rich
+ollama
+trogon
