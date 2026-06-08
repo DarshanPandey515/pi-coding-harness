@@ -4,7 +4,7 @@ from core.config import (
     get_provider_api_key
 )
 
-from core.sessions import (
+from commands.sessions import (
     create_session,
     append_messages,
     get_messages,
@@ -14,7 +14,7 @@ from core.sessions import (
 import os
 from core.config import SESSIONS_DIR
 
-from core.gemini import generate
+from core.providers.gemini import generate
 
 
 CHAT_SYSTEM_PROMPT = """

@@ -1,12 +1,12 @@
 import json
-from core.gemini import generate
-from core.tools.read import read_file
-from core.tools.bash import run_command
-from core.tools.write import write_file
-from core.tools.edit import edit_file
-from core.tools_registry import AVAILABLE_TOOLS
+from core.providers.gemini import generate
+from tools.read import read_file
+from tools.bash import run_command
+from tools.write import write_file
+from tools.edit import edit_file
+from core.prompts.tools_registry import AVAILABLE_TOOLS
 import json_repair
-from core.system import SYSTEM_PROMPT
+from core.prompts.system import SYSTEM_PROMPT
 
 
 

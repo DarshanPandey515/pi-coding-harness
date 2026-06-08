@@ -20,13 +20,16 @@ The project is organized into several key directories:
 
 ```
 .
+├── README.md
 ├── commands/         # Command-line interface definitions
-├── core/             # Core logic for the agent, tools, and model interaction
-│   └── tools/        # Individual tool implementations
-├── data/             # Data files, like model definitions
-├── .env              # Environment variables for configuration (API keys, etc.)
+├── core/             # Core logic for the agent, model providers, and prompts
+├── data/             # Data files (e.g., model definitions)
+├── tools/            # Agent tool implementations (bash, edit, etc.)
+├── .env              # Environment variables for configuration
+├── .gitignore        # Git ignore file
 ├── main.py           # Main entry point for the application
-└── README.md         # This file
+├── requirements.txt  # Project dependencies
+└── test.py           # Test scripts
 ```
 
 ## Getting Started

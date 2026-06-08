@@ -1,12 +1,12 @@
 import click
 from core.config import get_default_model, get_provider_api_key
-from core.sessions import (
+from commands.sessions import (
     create_session, load_session, append_messages,
     get_messages, update_agent_state
 )
 from core.repo import get_project_tree
 from core.agent_loop import run_agent
-from core.system import SYSTEM_PROMPT
+from core.prompts.system import SYSTEM_PROMPT
 
 AGENT_SYSTEM_PROMPT = SYSTEM_PROMPT
 

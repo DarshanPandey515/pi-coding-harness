@@ -1,5 +1,5 @@
 from pathlib import Path
-from core.tools.read import read_file
+from tools.read import read_file
 
 def edit_file(path, old_text, new_text):
     

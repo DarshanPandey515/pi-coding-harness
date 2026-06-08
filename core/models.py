@@ -1,6 +1,12 @@
-from core.providers import SUPPORTED_PROVIDERS
 import json
 from pathlib import Path
+
+SUPPORTED_PROVIDERS = {
+    "gemini": {
+        "name": "Google Gemini"
+    }
+}
+
 
 
 MODELS_FILE = Path("data/models.json")

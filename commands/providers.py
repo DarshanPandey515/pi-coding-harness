@@ -1,7 +1,14 @@
 import click
-from core.providers import SUPPORTED_PROVIDERS
 from core.models import provider_exists
 from core.config import load_config, save_config
+
+SUPPORTED_PROVIDERS = {
+    "gemini": {
+        "name": "Google Gemini"
+    }
+}
+
+
 
 @click.group()
 def providers():
