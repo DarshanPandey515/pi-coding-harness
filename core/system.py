@@ -68,6 +68,17 @@ Examples:
 
 {"tool":"write","path":"hello.py","content":"print('hello')"}
 
+
+You MUST respond with **only** a single line of valid JSON. No extra text, no explanations, no markdown. Every response must be one of:
+- {"tool":"read","path":"..."}
+- {"tool":"bash","command":"..."}
+- {"tool":"write","path":"...","content":"..."}
+- {"tool":"edit","path":"...","old_text":"...","new_text":"..."}
+- {"tool":"final","content":"..."}
+
+If the user asks a question that is not a task, still respond with {"tool":"final","content":"your answer here"}.
+Never output anything else.
+
 When the task is complete:
 
 {"tool":"final","content":"Task completed"}

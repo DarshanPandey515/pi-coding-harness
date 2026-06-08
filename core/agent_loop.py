@@ -11,12 +11,13 @@ from core.system import SYSTEM_PROMPT
 
 
 def parse_response(text):
+    if not text:
+        raise ValueError("Empty response from AI model")
 
     text = text.strip()
 
     if text.startswith("```json"):
         text = text[7:]
-    
     elif text.startswith("```"):
         text = text[3:]
     
@@ -29,8 +30,20 @@ def parse_response(text):
         repaired = json_repair.repair_json(text)
         return json.loads(repaired)
     
-    except:
+    except Exception as e:
+        pass  
+    
+    try:
         return json.loads(text)
+    
+    except json.JSONDecodeError as e:
+        print(f"\n[ERROR] Failed to parse AI response as JSON:")
+        print(f"[ERROR] Raw response (first 500 chars): {text[:500]}")
+        raise ValueError(
+            f"AI did not return valid JSON. Response starts with: {text[:100]}"
+        )
+    
+    
 
 
 def execute_tool(response):
@@ -83,28 +96,30 @@ def execute_tool(response):
         return tool_function(response)
 
 
-agent_state = {
-    "files_read": [],
-    "files_written": [],
-    "commands_run": [],
-    "file_edited": []
+def run_agent(api_key, model, prompt, history=None, agent_state=None): 
+    
+    if history is None:
+        history = []
+        
+    if agent_state is None:
+        agent_state =  {
+            "files_read": [],
+            "files_written": [],
+            "commands_run": [],
+            "file_edited": []
+        }
+    
+    messages = [SYSTEM_PROMPT]
+    
+    for msg in history:
+        messages.append(f"{msg['role']} : {msg['content']}")
 
-}
+    messages.append(prompt)
 
-def run_agent(api_key, model, prompt):
-    
-    messages = [
-        SYSTEM_PROMPT,
-        prompt
-    ]
-    
-    
     tool_counts = {}    
     
-    files_written = 0      
-    
-    written_files = set()                
-    
+    files_written_this_turn = 0
+        
     for step in range(100):        
         
         state_prompt = f"""
@@ -118,6 +133,9 @@ def run_agent(api_key, model, prompt):
 
             Commands Run:
             {agent_state['commands_run']}
+            
+            Files Edited:
+            {agent_state['file_edited']}
             
             REMINDER: You MUST respond with ONLY valid JSON.
         """
@@ -138,14 +156,15 @@ def run_agent(api_key, model, prompt):
             return response["content"]
         
         tool_name = response.get("tool")
-        
+        tool_key = None
+            
         if tool_name == "read":
             tool_key = f"read:{response.get('path')}"
             agent_state["files_read"].append(response["path"])
 
         elif tool_name == "write":
             tool_key = f"write:{response.get('path')}"
-            files_written += 1
+            files_written_this_turn += 1
             agent_state["files_written"].append(response["path"])
             
         elif tool_name == "bash":
@@ -167,25 +186,19 @@ def run_agent(api_key, model, prompt):
         if tool_counts[tool_key] > 10:
             return f"tool loop detected: {tool_key}"
 
-        if tool_name == "read":
-            path = response.get("path", "unknown")
-            print(f"→ READING FILE: {path}")
-            
-        elif tool_name == "bash":
-            command = response.get("command", "unknown")
-            print(f"→ RUNNING COMMAND: {command}")
-        
-        elif tool_name == "write":
-            path = response.get("path", "unknown")
-            print(f"→ WRITING: {path}")
-            
-        elif tool_name == "edit":
-            path = response.get("path", "unknown")            
-            print(f"→ EDITING: {path}") 
-        
+        msgs = {
+            "read": "→ READING FILE: {path}",
+            "bash": "→ RUNNING COMMAND: {command}",
+            "write": "→ WRITING: {path}",
+            "edit": "→ EDITING: {path}",
+        }
+
+        if tool_name in msgs:
+            fmt = msgs[tool_name]
+            print(fmt.format(**response))
         else:
             print(f"→ EXECUTING TOOL: {tool_name}")
-            print(f"  Parameters: {response}")  
+            print(f"  Parameters: {response}")
         
         try:  
             tool_result = execute_tool(response)
@@ -207,16 +220,13 @@ def run_agent(api_key, model, prompt):
             """
         )
         
-        if files_written >= 2:
+        if files_written_this_turn >= 2:
             messages.append(
                 "REMINDER: You have written the files. "
                 "If the task is complete, respond with: {\"tool\": \"final\", \"content\": \"Task completed\"}"
             )
             
-    
-    if files_written > 0:
-        return f"Task completed. Wrote {files_written} file(s)."
+    if files_written_this_turn > 0:
+        return f"Task completed. Wrote {files_written_this_turn} file(s)."
         
-        
-                
     return "agent exceeded max iteration"

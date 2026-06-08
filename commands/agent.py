@@ -50,7 +50,9 @@ def agent(prompt):
     response  = run_agent(
         api_key,
         actual_model,
-        full_prompt
+        full_prompt,
+        history=None,
+        agent_state=None
     )
     
     click.echo()

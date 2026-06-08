@@ -14,7 +14,13 @@ def create_session(provider, model):
         "updated_at": datetime.now().isoformat(),
         "provider": provider,
         "model": model,
-        "messages": []
+        "messages": [],
+        "agent_state": {
+            "files_read": [],
+            "files_written": [],
+            "commands_run": [],
+            "file_edited": []
+        }
     }
     
     session_file = (
@@ -25,6 +31,18 @@ def create_session(provider, model):
         json.dump(session, f, indent=4)
 
     return session_id
+
+
+
+def update_agent_state(session_id, agent_state):
+    session = load_session(session_id)
+    session["agent_state"] = agent_state
+    session["updated_at"] = datetime.now().isoformat()
+    
+    session_file = (SESSIONS_DIR / f"{session_id}.json")
+    
+    with open(session_file, "w") as f:
+        json.dump(session, f, indent=4)
 
 
 def load_session(session_id):
