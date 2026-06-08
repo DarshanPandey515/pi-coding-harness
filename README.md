@@ -6,9 +6,11 @@ A sophisticated coding agent harness designed to manage and orchestrate interact
 
 ## Features
 
-- **Extensible Tool System:** Easily add new tools for the agent to use (e.g., `read`, `write`, `edit`, `bash`).
+- **Extensible Tool System:** Easily add new tools for the agent to use (e.g., `read`, `write`, `edit`, `bash`, `tree`).
 - **Multi-Provider Support:** Designed to work with different AI model providers (e.g., Google Gemini).
 - **Agent Loop:** A core loop that allows the agent to iteratively think and act to solve complex tasks.
+- **Session Management:** Keep track of conversation history. You can list, show, and delete sessions.
+- **Chat Interface:** A simple, interactive chat mode for direct conversations with the AI.
 - **Configuration Management:** Simple configuration through a `.env` file.
 - **Command-Line Interface:** Interact with and direct the agent through a simple command-line interface.
 
@@ -63,13 +65,32 @@ Follow these instructions to get the project up and running on your local machin
 
 ## Usage
 
-To run the agent, use the main entry point:
+To run the agent, use the following command:
 
 ```bash
 python main.py agent -p "Your task for the agent goes here"
 ```
 
 The agent will then start its think-act loop to complete the task.
+
+To start a new chat session, use the `chat` command:
+
+```bash
+python main.py chat
+```
+
+For managing sessions, you can use the following commands:
+
+```bash
+# List all sessions
+python main.py sessions list
+
+# Show a specific session
+python main.py sessions show <session_id>
+
+# Delete a specific session
+python main.py sessions delete <session_id>
+```
 
 ## Contributing
 
