@@ -51,19 +51,28 @@ Follow these instructions to get the project up and running on your local machin
     pip install -r requirements.txt
     ```
 
-### Configuration
-
-1.  Create a `.env` file in the root of the project by copying the example file (if one exists) or creating it from scratch.
-    ```bash
-    cp .env.example .env
-    ```
-
-2.  Add your API keys and any other necessary configuration variables to the `.env` file.
-    ```
-    API_KEY=your_api_key_here
-    ```
-
 ## Usage
+
+```bash
+python main.py --help
+```
+
+```
+Usage: main.py [OPTIONS] COMMAND [ARGS]...
+
+  PI Coding Agent
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  agent      use 'python main.py agent --prompt /your task/'
+  chat       start your pi coding agent chat and sessions
+  delete     delete you session with --id {session id}
+  models     Available models
+  providers  Manage providers, login & logout
+  sessions   your sessions history
+```
 
 To run the agent, use the following command:
 
