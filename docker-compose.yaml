@@ -1,0 +1,9 @@
+services:
+  pi:
+    build: .
+    stdin_open: true
+    tty: true
+
+    volumes:
+      - ~/.pi-agent:/root/.pi-agent
+      - .:/workspace
