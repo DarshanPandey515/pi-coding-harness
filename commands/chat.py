@@ -14,7 +14,7 @@ from commands.sessions import (
 import os
 from core.config import SESSIONS_DIR
 
-from core.providers.gemini import generate
+from core.providers import generate
 
 
 CHAT_SYSTEM_PROMPT = """
@@ -33,8 +33,8 @@ def chat(resume):
     click.echo("Type 'exit' to quit")  
     
     model = get_default_model()
-    actual_model = model.split('/')[1]
-    provider = model.split("/")[0]
+    actual_model = model.split('/', 1)[1]
+    provider = model.split("/", 1)[0]
     api_key = get_provider_api_key(provider)
     
     
@@ -79,14 +79,12 @@ def chat(resume):
         
         history = get_messages(session_id)
         
-        messages = []
-        
-        for msg in history:
-            messages.append(
-                f"{msg['role']} : {msg['content']}"
-            )
+        messages = [
+            {"role": msg["role"], "content": msg["content"]}
+            for msg in history
+        ]
             
-        assistant_response = generate(api_key, actual_model, messages)
+        assistant_response = generate(provider, api_key, actual_model, messages)
         
         append_messages(
             session_id,

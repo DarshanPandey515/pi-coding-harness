@@ -1,5 +1,16 @@
 import subprocess
 
+MAX_STDOUT = 4000
+MAX_STDERR = 2000
+
+
+def _truncate(text, limit):
+    if not text:
+        return text
+    if len(text) <= limit:
+        return text
+    return text[:limit] + f"\n... [truncated {len(text) - limit} chars]"
+
 
 def run_command(command):
     
@@ -11,10 +22,11 @@ def run_command(command):
         timeout=30
     )
     
+    print(f"running: {command}")
     
     return {
-        "stdout": result.stdout,
-        "stderr": result.stderr,
+        "stdout": _truncate(result.stdout, MAX_STDOUT),
+        "stderr": _truncate(result.stderr, MAX_STDERR),
         "returncode": result.returncode
     }
     

@@ -1,4 +1,8 @@
 import click
+import asyncio
+import os
+from pathlib import Path
+from dataclasses import asdict
 from core.config import get_default_model, get_provider_api_key
 from commands.sessions import (
     create_session, load_session, append_messages,
@@ -7,6 +11,7 @@ from commands.sessions import (
 from core.repo import get_project_tree
 from core.agent_loop import run_agent
 from core.prompts.system import SYSTEM_PROMPT
+from core.agent_state import AgentState
 
 AGENT_SYSTEM_PROMPT = SYSTEM_PROMPT
 
@@ -21,7 +26,7 @@ def agent_chat(resume):
         click.echo("No model selected")
         return
     
-    provider, actual_model = model.split('/')
+    provider, actual_model = model.split('/', 1)
     api_key = get_provider_api_key(provider)
     
     if not api_key:
@@ -49,13 +54,14 @@ def agent_chat(resume):
             break
 
         tree = get_project_tree()
+        home = str(Path.home())
     
         full_prompt = f"""
         
             {SYSTEM_PROMPT}
         
-            User current folder Structure:
-            {tree}
+            Current working directory (a project folder, not the desktop): {os.getcwd()}
+            User home directory: {home}
 
             User Request:
             {user_input}
@@ -66,7 +72,10 @@ def agent_chat(resume):
             - Read files only when necessary.
             - Use edit for existing files.
             - Use write for new files.
-            - Complete the task and then return a final response.        
+            - When the user names a location like "desktop", write to the absolute path (e.g. {home}/Desktop/hello.py), not the current directory.
+            - Complete the task and then return a final response.   
+            - if user ask question then answer like a helpful assistant
+     
         
         """
 
@@ -74,17 +83,21 @@ def agent_chat(resume):
 
         session = load_session(session_id)
         history = session["messages"]          
-        agent_state = session["agent_state"]   
+        raw_state = session.get("agent_state") or {}
+        agent_state = AgentState(**raw_state)
 
-        final_response = run_agent(
-            api_key,
-            actual_model,
-            full_prompt,
-            history=history,
-            agent_state=agent_state
+        final_response = asyncio.run(
+            run_agent(
+                provider=provider,
+                model=actual_model,
+                api_key=api_key,
+                prompt=full_prompt,
+                history=history,
+                agent_state=agent_state
+            )
         )
 
         append_messages(session_id, "assistant", final_response)
-        update_agent_state(session_id, agent_state)
+        update_agent_state(session_id, asdict(agent_state))
 
         print(f"\nAssistant > {final_response}")
