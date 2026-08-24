@@ -1,5 +1,7 @@
 from pathlib import Path
 
+MAX_CONTENT = 8000
+
 
 def read_file(path):
     
@@ -8,7 +10,11 @@ def read_file(path):
     if not path.exists():
         raise FileNotFoundError(path)
     
-    return path.read_text()
+    print(f"reading file: {path}")
+    content = path.read_text()
+    if len(content) > MAX_CONTENT:
+        content = content[:MAX_CONTENT] + f"\n... [truncated {len(content) - MAX_CONTENT} chars]"
+    return content
 
 
 def get_tree(root="."):

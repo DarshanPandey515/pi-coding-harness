@@ -4,9 +4,11 @@ from pathlib import Path
 SUPPORTED_PROVIDERS = {
     "gemini": {
         "name": "Google Gemini"
+    },
+    "groq": {
+        "name":"groq"
     }
 }
-
 
 
 MODELS_FILE = Path("data/models.json")

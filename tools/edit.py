@@ -20,6 +20,8 @@ def edit_file(path, old_text, new_text):
     
     path.write_text(updated)
     
+    print(f"editing: {path}")
+    
     return {
         "success": True,
         "path": str(path)

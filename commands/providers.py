@@ -5,6 +5,9 @@ from core.config import load_config, save_config
 SUPPORTED_PROVIDERS = {
     "gemini": {
         "name": "Google Gemini"
+    },
+    "groq": {
+        "name":"groq"
     }
 }
 

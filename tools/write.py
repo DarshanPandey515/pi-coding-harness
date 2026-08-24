@@ -14,7 +14,7 @@ def write_file(path, content):
     
     path.write_text(content)
     
-    
+    print(f"writing: {path}")
     return {
         "success": True,
         "path": str(path),
