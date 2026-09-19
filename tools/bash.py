@@ -22,8 +22,6 @@ def run_command(command):
         timeout=30
     )
     
-    print(f"running: {command}")
-    
     return {
         "stdout": _truncate(result.stdout, MAX_STDOUT),
         "stderr": _truncate(result.stderr, MAX_STDERR),

@@ -10,7 +10,6 @@ def read_file(path):
     if not path.exists():
         raise FileNotFoundError(path)
     
-    print(f"reading file: {path}")
     content = path.read_text()
     if len(content) > MAX_CONTENT:
         content = content[:MAX_CONTENT] + f"\n... [truncated {len(content) - MAX_CONTENT} chars]"
