@@ -14,6 +14,15 @@ A sophisticated coding agent harness designed to manage and orchestrate interact
 - **Configuration Management:** Simple configuration through a `.env` file.
 - **Command-Line Interface:** Interact with and direct the agent through a simple command-line interface.
 
+## Quantifiable Metrics
+
+- **Tools:** 4 core tools (`read`, `bash`, `write`, `edit`) with explicit limits: `read` caps content at 8 KB and appends a truncation notice; `bash` limits stdout to 4 KB, stderr to 2 KB, and enforces a 30 s timeout; `edit` rejects edits when the search text is not found; `write` returns `success`/failure with a 500‑character preview.
+- **LLM Providers:** 2 supported providers – Google Gemini and Groq – configurable via a `.env` file without code changes (`core/models.py:5‑11`, `core/agent_loop.py:67‑71`).
+- **Session Persistence:** JSON sessions stored under `~/.pi-agent/sessions/{id}.json`, each recording `id, created_at, updated_at, provider, model, messages, agent_state` (file reads/written, commands run, edits). Enables exact replay and resume (`sessions.py:8‑33`).
+- **CLI:** 7 top‑level commands (`providers`, `models`, `agent`, `chat`, `sessions`, `delete`, `agent_chat`) with 10 distinct sub‑commands covering provider login/logout, model selection, session management, and agent invocation (`main.py:10‑23`).
+- **Agent‑Loop Metrics:** Tool‑call counts and file‑operation logs are tracked in `AgentState`; no hard iteration limit is currently enforced, and tenacity is a dependency but not yet wired for retries.
+- **Safety Caps:** Read buffer (8 KB), command timeout (30 s), stdout/stderr caps (4 KB/2 KB) prevent runaway resource use.
+
 ## Project Structure
 
 The project is organized into several key directories:
